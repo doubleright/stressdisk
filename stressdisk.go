@@ -95,6 +95,9 @@ type Stats struct {
 	WriteStart   time.Time // start of unaccumulated time of write operation
 	WriteSeconds float64   // write seconds accumulator
 	mode         statsMode // current mode - modeNone, modeRead, modeWrite
+	ReadSpeed    float64   //read speed
+	WrittenSpeed float64   //written spped
+	SpeedUnit    string    //speed unit
 }
 
 // NewStats cretates an initialised Stats
@@ -144,10 +147,14 @@ func (s *Stats) String() string {
 
 	if s.ReadSeconds != 0 {
 		readSpeed = float64(read) / MB / s.ReadSeconds
+		s.ReadSpeed = readSpeed
 	}
 	if s.WriteSeconds != 0 {
 		writeSpeed = float64(written) / MB / s.WriteSeconds
+		s.WrittenSpeed = writeSpeed
 	}
+
+	s.SpeedUnit = "MByte/s"
 
 	return fmt.Sprintf(`
 Bytes read:    %10d MByte (%7.2f MByte/s)
